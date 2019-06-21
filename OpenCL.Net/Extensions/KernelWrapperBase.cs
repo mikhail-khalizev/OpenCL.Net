@@ -66,6 +66,9 @@ namespace OpenCL.Net.Extensions
             ErrorCode error;
             var devicesInfoBuffer = Cl.GetContextInfo(_context, ContextInfo.Devices, out error);
             var devices = devicesInfoBuffer.CastToArray<Device>((devicesInfoBuffer.Size / Marshal.SizeOf(typeof(Device))));
+
+            source = System.IO.File.ReadAllText(source);
+
             var program = Cl.CreateProgramWithSource(_context, 1, new[] { source }, new[] { (IntPtr)source.Length }, out error);
             error = Cl.BuildProgram(program, (uint)devices.Length, devices, options == null ? string.Empty : options, null, IntPtr.Zero);
             if (error != ErrorCode.Success)
