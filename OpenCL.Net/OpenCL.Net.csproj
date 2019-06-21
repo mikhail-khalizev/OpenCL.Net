@@ -126,9 +126,9 @@ $(SolutionDir).nuget\Nuget push $(ProjectName)*.nupkg
 
 goto end
 :wrongConfiguration
-echo Copying OpenCL.Net.dll for samples task
-copy $(TargetPath) $(SolutionDir)\Samples\$(TargetFileName) /Y
-echo Current configuration is $(ConfigurationName), not NugetPublish. Aborting publish.
+@rem echo Copying OpenCL.Net.dll for samples task
+@rem copy $(TargetPath) $(SolutionDir)\Samples\$(TargetFileName) /Y 
+@rem echo Current configuration is $(ConfigurationName), not NugetPublish. Aborting publish.
 goto end
 :end</PostBuildEvent>
   </PropertyGroup>

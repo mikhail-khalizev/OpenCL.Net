@@ -35,8 +35,7 @@ namespace OpenCL.Net.Tests
         [Test]
         public void PlatformQueries()
         {
-            uint platformCount;
-            ErrorCode result = Cl.GetPlatformIDs(0, null, out platformCount);
+            var result = Cl.GetPlatformIDs(0, null, out var platformCount);
             Assert.AreEqual(result, ErrorCode.Success, "Could not get platform count");
             Console.WriteLine("{0} platforms found", platformCount);
 
@@ -44,15 +43,14 @@ namespace OpenCL.Net.Tests
             result = Cl.GetPlatformIDs(platformCount, platformIds, out platformCount);
             Assert.AreEqual(result, ErrorCode.Success, "Could not get platform ids");
 
-            foreach (Platform platformId in platformIds)
+            foreach (var platformId in platformIds)
             {
-                IntPtr paramSize;
-                result = Cl.GetPlatformInfo(platformId, PlatformInfo.Name, IntPtr.Zero, InfoBuffer.Empty, out paramSize);
+                result = Cl.GetPlatformInfo(platformId, PlatformInfo.Name, IntPtr.Zero, InfoBuffer.Empty, out var paramSize);
                 Assert.AreEqual(result, ErrorCode.Success, "Could not get platform name size");
 
                 using (var buffer = new InfoBuffer(paramSize))
                 {
-                    result = Cl.GetPlatformInfo(platformIds[0], PlatformInfo.Name, paramSize, buffer, out paramSize);
+                    result = Cl.GetPlatformInfo(platformId, PlatformInfo.Name, paramSize, buffer, out paramSize);
                     Assert.AreEqual(result, ErrorCode.Success, "Could not get platform name string");
 
                     Console.WriteLine("Platform: {0}", buffer);
@@ -64,7 +62,7 @@ namespace OpenCL.Net.Tests
         public void PlatformQueries2()
         {
             ErrorCode error;
-            foreach (Platform platform in Cl.GetPlatformIDs(out error))
+            foreach (var platform in Cl.GetPlatformIDs(out error))
             {
                 if (!platform.IsValid())
                     Console.WriteLine("Invalid handle");
@@ -78,8 +76,7 @@ namespace OpenCL.Net.Tests
         [Test]
         public void DeviceQueries()
         {
-            uint platformCount;
-            ErrorCode result = Cl.GetPlatformIDs(0, null, out platformCount);
+            var result = Cl.GetPlatformIDs(0, null, out var platformCount);
             Assert.AreEqual(result, ErrorCode.Success, "Could not get platform count");
             Console.WriteLine("{0} platforms found", platformCount);
 
@@ -87,33 +84,34 @@ namespace OpenCL.Net.Tests
             result = Cl.GetPlatformIDs(platformCount, platformIds, out platformCount);
             Assert.AreEqual(result, ErrorCode.Success, "Could not get platform ids");
 
-            foreach (Platform platformId in platformIds)
+            foreach (var platformId in platformIds)
             {
-                IntPtr paramSize;
-                result = Cl.GetPlatformInfo(platformId, PlatformInfo.Name, IntPtr.Zero, InfoBuffer.Empty, out paramSize);
+                result = Cl.GetPlatformInfo(platformId, PlatformInfo.Name, IntPtr.Zero, InfoBuffer.Empty, out var paramSize);
                 Assert.AreEqual(result, ErrorCode.Success, "Could not get platform name size");
 
                 using (var buffer = new InfoBuffer(paramSize))
                 {
-                    result = Cl.GetPlatformInfo(platformIds[0], PlatformInfo.Name, paramSize, buffer, out paramSize);
+                    result = Cl.GetPlatformInfo(platformId, PlatformInfo.Name, paramSize, buffer, out paramSize);
                     Assert.AreEqual(result, ErrorCode.Success, "Could not get platform name string");
                 }
 
-                uint deviceCount;
-                result = Cl.GetDeviceIDs(platformIds[0], DeviceType.All, 0, null, out deviceCount);
+                result = Cl.GetDeviceIDs(platformId, DeviceType.All, 0, null, out var deviceCount);
                 Assert.AreEqual(result, ErrorCode.Success, "Could not get device count");
 
                 var deviceIds = new Device[deviceCount];
-                result = Cl.GetDeviceIDs(platformIds[0], DeviceType.All, deviceCount, deviceIds, out deviceCount);
+                result = Cl.GetDeviceIDs(platformId, DeviceType.All, deviceCount, deviceIds, out deviceCount);
                 Assert.AreEqual(result, ErrorCode.Success, "Could not get device ids");
 
-                result = Cl.GetDeviceInfo(deviceIds[0], DeviceInfo.Vendor, IntPtr.Zero, InfoBuffer.Empty, out paramSize);
-                Assert.AreEqual(result, ErrorCode.Success, "Could not get device vendor name size");
-                using (var buf = new InfoBuffer(paramSize))
+                foreach (var deviceId in deviceIds)
                 {
-                    result = Cl.GetDeviceInfo(deviceIds[0], DeviceInfo.Vendor, paramSize, buf, out paramSize);
-                    Assert.AreEqual(result, ErrorCode.Success, "Could not get device vendor name string");
-                    var deviceVendor = buf.ToString();
+                    result = Cl.GetDeviceInfo(deviceId, DeviceInfo.Name, IntPtr.Zero, InfoBuffer.Empty, out paramSize);
+                    Assert.AreEqual(result, ErrorCode.Success, "Could not get device vendor name size");
+                    using (var buf = new InfoBuffer(paramSize))
+                    {
+                        result = Cl.GetDeviceInfo(deviceId, DeviceInfo.Name, paramSize, buf, out paramSize);
+                        Assert.AreEqual(result, ErrorCode.Success, "Could not get device vendor name string");
+                        var deviceVendor = buf.ToString();
+                    }
                 }
             }
         }
@@ -122,8 +120,8 @@ namespace OpenCL.Net.Tests
         public void DeviceQueries2()
         {
             ErrorCode error;
-            foreach (Platform platform in Cl.GetPlatformIDs(out error))
-                foreach (Device device in Cl.GetDeviceIDs(platform, DeviceType.All, out error))
+            foreach (var platform in Cl.GetPlatformIDs(out error))
+                foreach (var device in Cl.GetDeviceIDs(platform, DeviceType.All, out error))
                     Console.WriteLine("Device name: {0}", Cl.GetDeviceInfo(device, DeviceInfo.Name, out error));
         }
 
@@ -139,7 +137,7 @@ namespace OpenCL.Net.Tests
                           select dev).First();
 
             uint refCount;
-            using (Context context = Cl.CreateContext(null, 1, new[] { device }, null, IntPtr.Zero, out error))
+            using (var context = Cl.CreateContext(null, 1, new[] { device }, null, IntPtr.Zero, out error))
                 refCount = Cl.GetContextInfo(context, ContextInfo.ReferenceCount, out error).CastTo<uint>();
         }
     }
@@ -177,11 +175,11 @@ namespace OpenCL.Net.Tests
             ErrorCode error;
 
             Console.WriteLine(MemObjectType.Image2D);
-            foreach (ImageFormat imageFormat in Cl.GetSupportedImageFormats(_context, MemFlags.ReadOnly, MemObjectType.Image2D, out error))
+            foreach (var imageFormat in Cl.GetSupportedImageFormats(_context, MemFlags.ReadOnly, MemObjectType.Image2D, out error))
                 Console.WriteLine("{0} {1}", imageFormat.ChannelOrder, imageFormat.ChannelType);
             
             Console.WriteLine(MemObjectType.Image3D);
-            foreach (ImageFormat imageFormat in Cl.GetSupportedImageFormats(_context, MemFlags.ReadOnly, MemObjectType.Image2D, out error))
+            foreach (var imageFormat in Cl.GetSupportedImageFormats(_context, MemFlags.ReadOnly, MemObjectType.Image2D, out error))
                 Console.WriteLine("{0} {1}", imageFormat.ChannelOrder, imageFormat.ChannelType);
         }
 
@@ -191,10 +189,10 @@ namespace OpenCL.Net.Tests
             const int bufferSize = 100;
             
             ErrorCode error;
-            Random random = new Random();
+            var random = new Random();
 
-            float[] values = (from value in Enumerable.Range(0, bufferSize) select (float)random.NextDouble()).ToArray();
-            IMem buffer = Cl.CreateBuffer(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, (IntPtr)(sizeof (float) * bufferSize), values, out error);
+            var values = (from value in Enumerable.Range(0, bufferSize) select (float)random.NextDouble()).ToArray();
+            var buffer = Cl.CreateBuffer(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, (IntPtr)(sizeof (float) * bufferSize), values, out error);
             Assert.AreEqual(error, ErrorCode.Success);
 
             Assert.AreEqual(Cl.GetMemObjectInfo(buffer, MemInfo.Type, out error).CastTo<MemObjectType>(), MemObjectType.Buffer);
@@ -224,7 +222,7 @@ namespace OpenCL.Net.Tests
 
             {
                 var image2DData = new float[200 * 200 * sizeof(float)];
-                IMem image2D = Cl.CreateImage2D(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, new ImageFormat(ChannelOrder.RGBA, ChannelType.Float),
+                var image2D = Cl.CreateImage2D(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, new ImageFormat(ChannelOrder.RGBA, ChannelType.Float),
                                                   (IntPtr)200, (IntPtr)200, (IntPtr)0, image2DData, out error);
                 Assert.AreEqual(error, ErrorCode.Success);
 
@@ -236,7 +234,7 @@ namespace OpenCL.Net.Tests
 
             {
                 var image3DData = new float[200 * 200 * 200 * sizeof(float)];
-                IMem image3D = Cl.CreateImage3D(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, new ImageFormat(ChannelOrder.RGBA, ChannelType.Float),
+                var image3D = Cl.CreateImage3D(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, new ImageFormat(ChannelOrder.RGBA, ChannelType.Float),
                                                   (IntPtr)200, (IntPtr)200, (IntPtr)200, IntPtr.Zero, IntPtr.Zero, image3DData, out error);
                 Assert.AreEqual(error, ErrorCode.Success);
 
@@ -252,7 +250,7 @@ namespace OpenCL.Net.Tests
         public void CommandQueueAPI()
         {
             ErrorCode error;
-            using (CommandQueue commandQueue = Cl.CreateCommandQueue(_context, _device, CommandQueueProperties.OutOfOrderExecModeEnable, out error))
+            using (var commandQueue = Cl.CreateCommandQueue(_context, _device, CommandQueueProperties.OutOfOrderExecModeEnable, out error))
             {
                 Assert.AreEqual(ErrorCode.Success, error);
 
@@ -303,7 +301,7 @@ namespace OpenCL.Net.Tests
             ErrorCode error;
 
 
-            using (Program program = Cl.CreateProgramWithSource(_context, 1, new[] { sourceWithErrors }, null, out error))
+            using (var program = Cl.CreateProgramWithSource(_context, 1, new[] { sourceWithErrors }, null, out error))
             {
                 Assert.AreEqual(error, ErrorCode.Success);
 
@@ -316,7 +314,7 @@ namespace OpenCL.Net.Tests
                 Console.WriteLine(Cl.GetProgramBuildInfo(program, _device, ProgramBuildInfo.Log, out error));
             }
 
-            using (Program program = Cl.CreateProgramWithSource(_context, 1, new[] { correctSource }, null, out error))
+            using (var program = Cl.CreateProgramWithSource(_context, 1, new[] { correctSource }, null, out error))
             {
                 Assert.AreEqual(error, ErrorCode.Success);
 
@@ -333,12 +331,12 @@ namespace OpenCL.Net.Tests
                 Console.WriteLine("Program source was:");
                 Console.WriteLine(Cl.GetProgramInfo(program, ProgramInfo.Source, out error));
 
-                Kernel kernel = Cl.CreateKernel(program, "add_array", out error);
+                var kernel = Cl.CreateKernel(program, "add_array", out error);
                 Assert.AreEqual(error, ErrorCode.Success);
 
                 kernel.Dispose();
 
-                Kernel[] kernels = Cl.CreateKernelsInProgram(program, out error);
+                var kernels = Cl.CreateKernelsInProgram(program, out error);
                 Assert.AreEqual(error, ErrorCode.Success);
                 Assert.AreEqual(kernels.Length, 2);
                 Assert.AreEqual("add_array", Cl.GetKernelInfo(kernels[0], KernelInfo.FunctionName, out error).ToString());
@@ -369,28 +367,28 @@ namespace OpenCL.Net.Tests
 
             ErrorCode error;
 
-            using (Program program = Cl.CreateProgramWithSource(_context, 1, new[] { correctSource }, null, out error))
+            using (var program = Cl.CreateProgramWithSource(_context, 1, new[] { correctSource }, null, out error))
             {
                 Assert.AreEqual(error, ErrorCode.Success);
                 error = Cl.BuildProgram(program, 1, new[] { _device }, string.Empty, null, IntPtr.Zero);
                 Assert.AreEqual(ErrorCode.Success, error);
                 Assert.AreEqual(Cl.GetProgramBuildInfo(program, _device, ProgramBuildInfo.Status, out error).CastTo<BuildStatus>(), BuildStatus.Success);
 
-                Kernel[] kernels = Cl.CreateKernelsInProgram(program, out error);
-                Kernel kernel = kernels[0];
+                var kernels = Cl.CreateKernelsInProgram(program, out error);
+                var kernel = kernels[0];
 
                 const int cnBlockSize = 4;
                 const int cnBlocks = 3;
-                IntPtr cnDimension = new IntPtr(cnBlocks * cnBlockSize);
+                var cnDimension = new IntPtr(cnBlocks * cnBlockSize);
 
                 // allocate host  vectors
-                float[] A = new float[cnDimension.ToInt32()];
-                float[] B = new float[cnDimension.ToInt32()];
-                float[] C = new float[cnDimension.ToInt32()];
+                var A = new float[cnDimension.ToInt32()];
+                var B = new float[cnDimension.ToInt32()];
+                var C = new float[cnDimension.ToInt32()];
 
                 // initialize host memory
-                Random rand = new Random();
-                for (int i = 0; i < A.Length; i++)
+                var rand = new Random();
+                for (var i = 0; i < A.Length; i++)
                 {
                     A[i] = rand.Next() % 256;
                     B[i] = rand.Next() % 256;
@@ -399,19 +397,19 @@ namespace OpenCL.Net.Tests
                 //Cl.IMem hDeviceMemA = Cl.CreateBuffer(_context, Cl.MemFlags.CopyHostPtr | Cl.MemFlags.ReadOnly, (IntPtr)(sizeof(float) * cnDimension.ToInt32()), A, out error);
                 //Assert.AreEqual(Cl.ErrorCode.Success, error);
                 
-                IMem<float> hDeviceMemA = Cl.CreateBuffer(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, A, out error);
+                var hDeviceMemA = Cl.CreateBuffer(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, A, out error);
                 Assert.AreEqual(ErrorCode.Success, error);
 
-                IMem hDeviceMemB = Cl.CreateBuffer(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, (IntPtr)(sizeof(float) * cnDimension.ToInt32()), B, out error);
+                var hDeviceMemB = Cl.CreateBuffer(_context, MemFlags.CopyHostPtr | MemFlags.ReadOnly, (IntPtr)(sizeof(float) * cnDimension.ToInt32()), B, out error);
                 Assert.AreEqual(ErrorCode.Success, error);
-                IMem hDeviceMemC = Cl.CreateBuffer(_context, MemFlags.WriteOnly, (IntPtr)(sizeof(float) * cnDimension.ToInt32()), IntPtr.Zero, out error);
+                var hDeviceMemC = Cl.CreateBuffer(_context, MemFlags.WriteOnly, (IntPtr)(sizeof(float) * cnDimension.ToInt32()), IntPtr.Zero, out error);
                 Assert.AreEqual(ErrorCode.Success, error);
 
-                CommandQueue cmdQueue = Cl.CreateCommandQueue(_context, _device, (CommandQueueProperties)0, out error);
+                var cmdQueue = Cl.CreateCommandQueue(_context, _device, (CommandQueueProperties)0, out error);
 
                 Event clevent;
 
-                int intPtrSize = 0;
+                var intPtrSize = 0;
                 intPtrSize = Marshal.SizeOf(typeof(IntPtr));
 
                 // setup parameter values
@@ -437,12 +435,12 @@ namespace OpenCL.Net.Tests
                 Assert.AreEqual(ErrorCode.Success, error, error.ToString());
 
                 // copy results from device back to host
-                IntPtr event_handle = IntPtr.Zero;
+                var event_handle = IntPtr.Zero;
 
                 error = Cl.EnqueueReadBuffer(cmdQueue, hDeviceMemC, Bool.True, 0, C.Length, C, 0, null, out clevent);
                 Assert.AreEqual(ErrorCode.Success, error, error.ToString());
 
-                for (int i = 0; i < A.Length; i++)
+                for (var i = 0; i < A.Length; i++)
                 {
                     Assert.That(A[i] + B[i], Is.EqualTo(C[i]));
                 }

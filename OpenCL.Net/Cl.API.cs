@@ -34,7 +34,7 @@ namespace OpenCL.Net
 
         [DllImport(Library)]
         private static extern ErrorCode clGetPlatformIDs(cl_uint numEntries,
-                                                         [Out] [MarshalAs(UnmanagedType.LPArray)] Platform[] platforms,
+                                                         [Out] Platform[] platforms,
                                                          out cl_uint numPlatforms);
         public static ErrorCode GetPlatformIDs(cl_uint numEntries,
                                                Platform[] platforms,
