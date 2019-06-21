@@ -21,7 +21,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
-using ExtraConstraints;
 
 namespace OpenCL.Net.Extensions
 {
@@ -301,12 +300,6 @@ namespace OpenCL.Net.Extensions
             err.Check();
 
             return result;
-        }
-
-        public static IMem<TOrder, TType> CreateImage<[EnumConstraint(typeof(ChannelOrder))] TOrder, [EnumConstraint(typeof(ChannelType))] TType, TData>(this Context context, int width, int height, TData[] data)
-        { 
-            // return 
-            return null;
         }
     }
 }

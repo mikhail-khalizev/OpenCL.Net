@@ -71,7 +71,7 @@ namespace OpenCL.Net.Extensions
             if (error != ErrorCode.Success)
             {
                 errors = string.Join("\n", from device in devices
-                                            select Cl.GetProgramBuildInfo(program, device, ProgramBuildInfo.Log, out error).ToString());
+                                            select Cl.GetProgramBuildInfo(program, device, ProgramBuildInfo.Log, out var error2).ToString());
                 throw new Cl.Exception(error, errors);
             }
             _kernel = Cl.CreateKernel(program, kernelName, out error);
@@ -88,10 +88,10 @@ namespace OpenCL.Net.Extensions
             return result;
         }
 
-        protected internal abstract string KernelPath { get; }
-        protected internal abstract string OriginalKernelPath { get; }
-        protected internal abstract string KernelSource { get; }
-        protected internal abstract string KernelName { get; }
+        public abstract string KernelPath { get; }
+        public abstract string OriginalKernelPath { get; }
+        public abstract string KernelSource { get; }
+        public abstract string KernelName { get; }
 
         public Context Context { get { return _context; } }
         public Kernel Kernel { get { return _kernel; } }

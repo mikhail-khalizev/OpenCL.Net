@@ -222,7 +222,7 @@ namespace OpenCL.Net.Tasks
 
                     var kernelPathProperty = new CodeMemberProperty
                     {
-                        Attributes = MemberAttributes.Override | MemberAttributes.FamilyOrAssembly,
+                        Attributes = MemberAttributes.Override | MemberAttributes.Public,
                         Name = "KernelPath",
                         Type = new CodeTypeReference(typeof(string), CodeTypeReferenceOptions.GlobalReference),
                         HasGet = true,
@@ -235,7 +235,7 @@ namespace OpenCL.Net.Tasks
 
                     var originalKernelPath = new CodeMemberProperty
                     {
-                        Attributes = MemberAttributes.Override | MemberAttributes.FamilyOrAssembly,
+                        Attributes = MemberAttributes.Override | MemberAttributes.Public,
                         Name = "OriginalKernelPath",
                         Type = new CodeTypeReference(typeof(string), CodeTypeReferenceOptions.GlobalReference),
                         HasGet = true,
@@ -246,7 +246,7 @@ namespace OpenCL.Net.Tasks
 
                     var kernelSource = new CodeMemberProperty 
                     { 
-                        Attributes = MemberAttributes.Override | MemberAttributes.FamilyOrAssembly,
+                        Attributes = MemberAttributes.Override | MemberAttributes.Public,
                         Name = "KernelSource",
                         Type = new CodeTypeReference(typeof(string), CodeTypeReferenceOptions.GlobalReference),
                         HasGet = true,
@@ -262,7 +262,7 @@ namespace OpenCL.Net.Tasks
 
                     var kernelNameProperty = new CodeMemberProperty
                     {
-                        Attributes = MemberAttributes.Override | MemberAttributes.FamilyOrAssembly,
+                        Attributes = MemberAttributes.Override | MemberAttributes.Public,
                         Name = "KernelName",
                         Type = new CodeTypeReference(typeof(string), CodeTypeReferenceOptions.GlobalReference),
                         HasGet = true,

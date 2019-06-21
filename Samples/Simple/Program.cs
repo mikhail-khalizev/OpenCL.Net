@@ -61,9 +61,9 @@ namespace Simple
                 MemFlags.WriteOnly);
 
             var kernel = new Kernel.doSomething(env.Context);
-            kernel.Compile(string.Format("-cl-opt-disable -g -s \"{0}\"", Kernel.Kernel_Source.OriginalKernelPath));
+            kernel.Compile(string.Format("-cl-opt-disable -g -s \"{0}\"", kernel.OriginalKernelPath));
 
-            var kernelRun = kernel.Run(env.CommandQueues[0], a, b, 100, 10f, ArrayLength);
+            var kernelRun = kernel.EnqueueRun(env.CommandQueues[0], a, b, 100, 10f, ArrayLength);
             var results = new float[ArrayLength];
             env.CommandQueues[0].ReadFromBuffer(b, results, waitFor: kernelRun);
 

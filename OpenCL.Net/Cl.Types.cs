@@ -22,7 +22,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-using ExtraConstraints;
 
 namespace OpenCL.Net
 {
@@ -480,10 +479,6 @@ namespace OpenCL.Net
     public interface IMem<T> : IMem
         where T: struct
     { }
-
-    public interface IMem<[EnumConstraint(typeof(ChannelOrder))] TOrder, [EnumConstraint(typeof(ChannelType))] TType>: IMem
-    {
-    }
 
     public interface IMem: IDisposable
     { 
