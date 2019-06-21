@@ -7,7 +7,7 @@ OpenCL.NET now generates type-safe kernel wrappers using a custom build step. St
 2. Add a kernel (say _kernel.cl_) and write code in it as usual
 3. Go to Properties for that file and choose **"Kernel"** as the Build Action
 4. You can either choose the "Copy the file to the output directory" option (in which case the wrapper will reference this file to load sources) or leave it at **"Do not copy"** which will cause OpenCL.Net to embed the kernel source code in the wrapper.
-5. Simply instantiate and use the kernel as shown [here](https://openclnet.codeplex.com/SourceControl/latest#trunk/Samples/Simple/Program.cs)
+5. Simply instantiate and use the kernel as shown [here](https://github.com/mikhail-khalizev/OpenCL.Net/blob/master/Samples/Simple/Program.cs)
 
 For the curious-minded, the actual kernel wrapper is generated as _obj/<yourKernelName>.Kernel.cs_ and included in the compile process, much like App.xaml.g.cs. 
 
