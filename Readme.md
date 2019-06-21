@@ -16,6 +16,7 @@ _**Note:** OpenCL.NET does not support custom types or complex preprocessor-base
 OpenCL.NET is now available on Nuget! Get it [here](http://www.nuget.org/List/Packages/OpenCL.Net)
 
 ## Links
+* [Khronos OpenCL Overview](https://www.khronos.org/opencl)
 * [Khronos OpenCL Registry](https://www.khronos.org/registry/OpenCL)
 * [OpenCL Header Files](https://github.com/KhronosGroup/OpenCL-Headers)
 * [OpenCL C++ Header Files](https://github.com/KhronosGroup/OpenCL-CLHPP)
