@@ -14,3 +14,8 @@ For the curious-minded, the actual kernel wrapper is generated as _obj/<yourKern
 _**Note:** OpenCL.NET does not support custom types or complex preprocessor-based parameter type definitions at this time. Contact me if something you would very much like to have does not work._
 
 OpenCL.NET is now available on Nuget! Get it [here](http://www.nuget.org/List/Packages/OpenCL.Net)
+
+## Links
+* [Khronos OpenCL Registry](https://www.khronos.org/registry/OpenCL)
+* [OpenCL Header Files](https://github.com/KhronosGroup/OpenCL-Headers)
+* [OpenCL C++ Header Files](https://github.com/KhronosGroup/OpenCL-CLHPP)
